@@ -3,7 +3,7 @@ spring:
     name: stats-server
   config:
     import: "configserver:"
-    cloud:
+  cloud:
       config:
         fail-fast: true
         retry:
