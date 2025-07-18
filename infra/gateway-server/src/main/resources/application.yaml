@@ -1,20 +1,33 @@
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
 spring:
   application:
     name: gateway-server
   config:
     import: "configserver:"
-    cloud:
-      config:
-        fail-fast: true
-        retry:
-          useRandomPolicy: true
-          max-interval: 6000
-        discovery:
-          enabled: true
-          serviceId: config-server
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        useRandomPolicy: true
+        max-interval: 6000
+      discovery:
+        enabled: true
+        serviceId: config-server
 
 eureka:
   client:
     registerWithEureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    leaseRenewalIntervalInSeconds: 10
