@@ -25,15 +25,13 @@ import java.util.Optional;
 @Service
 public class StatsClientImpl implements StatsClient {
     private final String getStatsServiceId;
-    private final String baseUri;
     private final RestClient restClient;
     private final DiscoveryClient discoveryClient;
 
     public StatsClientImpl(String getStatsServiceId, DiscoveryClient discoveryClient) {
         this.getStatsServiceId = getStatsServiceId;
         this.discoveryClient = discoveryClient;
-        baseUri = getBaseUri();
-        this.restClient = RestClient.builder().baseUrl(baseUri).build();
+        this.restClient = RestClient.builder().build();
     }
 
     @Override
@@ -41,7 +39,7 @@ public class StatsClientImpl implements StatsClient {
         log.info("save statistics for {}", statsHitDto.toString());
         try {
             return restClient.post()
-                    .uri(baseUri + "/hit")
+                    .uri(getBaseUri() + "/hit")
                     .body(statsHitDto)
                     .retrieve()
                     .body(StatsHitDto.class);
@@ -57,7 +55,7 @@ public class StatsClientImpl implements StatsClient {
                 start, end, uris, unique);
         try {
             UriComponents uriComponents = UriComponentsBuilder
-                    .fromUriString(baseUri + "/stats")
+                    .fromUriString(getBaseUri() + "/stats")
                     .queryParam("start", start)
                     .queryParam("end", end)
                     .queryParamIfPresent("uris", Optional.ofNullable(uris))
