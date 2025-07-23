@@ -18,7 +18,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             FROM Event as e
             WHERE (:userIds IS NULL OR e.initiator in :userIds)
             AND (:states IS NULL OR e.state in :states)
-            AND (:categoryIds IS NULL OR e.category.id in :categoryIds)
+            AND (:categoryIds IS NULL OR e.category in :categoryIds)
             AND (CAST(:start AS DATE) IS NULL OR e.eventDate >= :start)
             AND (CAST(:end AS DATE) IS NULL OR e.eventDate <= :end)
             """)
@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             SELECT e
             FROM Event as e
             WHERE (:text IS NULL OR (e.annotation ilike %:text% OR e.description ilike %:text%))
-            AND (:categoryIds IS NULL OR e.category.id in :categoryIds)
+            AND (:categoryIds IS NULL OR e.category in :categoryIds)
             AND (:paid IS NULL OR e.paid = :paid)
             AND (e.eventDate >= :start)
             AND (e.state = :state)
@@ -56,7 +56,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             AND e.initiator = :userId
             """)
     Optional<Event> findByIdAndUserId(long eventId, long userId);
-    //Optional<Event> findByIdAndUserId(long eventId, long userId);
 
     @Query("""
             SELECT e

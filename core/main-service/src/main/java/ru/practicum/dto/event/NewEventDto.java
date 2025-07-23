@@ -1,6 +1,7 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dto.category.CategoryDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +10,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.Constants;
-import ru.practicum.dto.category.CategoryDto;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +25,7 @@ public class NewEventDto {
     @NotBlank
     String annotation;
 
-    CategoryDto category;
+    Long category;
 
     @Size(min = 20, max = 7000)
     @NotBlank

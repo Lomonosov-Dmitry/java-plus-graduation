@@ -1,5 +1,8 @@
-package ru.practicum.service.impl;
+package ru.practicum.service;
 
+import dto.category.CategoryDto;
+import dto.category.NewCategoryDto;
+import exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.dal.CategoryRepository;
-import ru.practicum.dto.category.CategoryDto;
-import ru.practicum.dto.category.NewCategoryDto;
-import ru.practicum.exceptions.NotFoundException;
-import ru.practicum.mappers.CategoryMapper;
+import ru.practicum.mapper.CategoryMapper;
 import ru.practicum.model.Category;
-import ru.practicum.service.CategoryService;
 
 import java.util.List;
 

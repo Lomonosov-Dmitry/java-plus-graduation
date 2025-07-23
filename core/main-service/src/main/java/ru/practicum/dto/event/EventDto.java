@@ -1,11 +1,11 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dto.category.CategoryDto;
 import dto.user.UserShortDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.Constants;
-import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.event.enums.EventState;
 
@@ -22,7 +22,7 @@ import java.util.List;
 public class EventDto {
     Long id;
     String annotation;
-    CategoryDto category;
+    Long category;
     Long confirmedRequests;
 
     @JsonFormat(pattern = Constants.DATE_PATTERN)

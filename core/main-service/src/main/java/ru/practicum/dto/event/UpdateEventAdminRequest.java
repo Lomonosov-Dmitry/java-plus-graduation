@@ -1,13 +1,13 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import dto.category.CategoryDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.Constants;
-import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.event.enums.EventActionStateAdmin;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class UpdateEventAdminRequest {
     @Size(min = 20, max = 2000)
     String annotation;
 
-    CategoryDto category;
+    Long category;
 
     @Size(min = 20, max = 7000)
     String description;

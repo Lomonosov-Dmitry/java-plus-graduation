@@ -1,19 +1,15 @@
 package ru.practicum;
 
-import feign.CategoryClient;
-import feign.UserClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableDiscoveryClient
-@EnableFeignClients(clients = {UserClient.class, CategoryClient.class})
-public class MainServiceApp {
+public class CategoryServiceApp {
     public static void main(String[] args) {
-        SpringApplication.run(MainServiceApp.class, args);
+        SpringApplication.run(CategoryServiceApp.class, args);
     }
 }

@@ -24,9 +24,12 @@ public class Event {
     @Column(name = "annotation")
     String annotation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "category_id")
+    Long category;
+
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    Category category;
+    Category category;*/
 
     @Column(name = "confirmed_requests")
     Long confirmedRequests;
@@ -42,10 +45,6 @@ public class Event {
 
     @Column(name = "user_id")
     Long initiator;
-
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    User initiator;*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
