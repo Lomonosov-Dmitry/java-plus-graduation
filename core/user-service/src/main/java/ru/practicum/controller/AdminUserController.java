@@ -1,4 +1,4 @@
-package ru.practicum.controller.adminapi;
+package ru.practicum.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.user.NewUserDto;
-import ru.practicum.dto.user.UserDto;
+import dto.user.NewUserDto;
+import dto.user.UserDto;
 import ru.practicum.service.UserService;
 
 import java.util.Collection;
@@ -28,6 +28,11 @@ public class AdminUserController {
 
         log.info("Creating new user with body {}", dto);
         return userService.newUser(dto);
+    }
+
+    @GetMapping("/{userId}")
+    public UserDto getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
     }
 
     @GetMapping

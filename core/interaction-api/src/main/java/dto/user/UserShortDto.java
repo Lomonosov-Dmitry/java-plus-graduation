@@ -1,4 +1,4 @@
-package ru.practicum.dto.user;
+package dto.user;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,9 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"email"})
-public class UserDto {
+public class UserShortDto {
     Long id;
     String name;
-    String email;
 }

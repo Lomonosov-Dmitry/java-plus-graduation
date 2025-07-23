@@ -17,14 +17,14 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             SELECT r
             FROM Request as r
             WHERE r.eventId.id = :eventId
-            AND r.userId.id = :userId
+            AND r.userId = :userId
             """)
     Optional<Request> findByUserIdAndEventId(long userId, long eventId);
 
     @Query("""
             SELECT r
             FROM Request as r
-            WHERE r.userId.id = :userId
+            WHERE r.userId = :userId
             """)
     Collection<Request> findAllByUserId(long userId);
 

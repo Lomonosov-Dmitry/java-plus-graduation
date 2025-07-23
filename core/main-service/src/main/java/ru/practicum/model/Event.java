@@ -40,9 +40,12 @@ public class Event {
     @Column(name = "event_date")
     LocalDateTime eventDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "user_id")
+    Long initiator;
+
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User initiator;
+    User initiator;*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")

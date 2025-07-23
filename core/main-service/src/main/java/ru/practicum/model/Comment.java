@@ -22,9 +22,12 @@ public class Comment {
     @JoinColumn(name = "event_id")
     Event event;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "author_id")
+    Long authorId;
+
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
-    User author;
+    User author;*/
 
     @Column(name = "message")
     String message;

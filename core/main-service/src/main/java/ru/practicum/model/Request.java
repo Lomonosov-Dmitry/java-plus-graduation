@@ -22,9 +22,12 @@ public class Request {
     @GeneratedValue(strategy = IDENTITY)
     long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "requester_id")
+    Long userId;
+
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id")
-    User userId;
+    User userId;*/
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")

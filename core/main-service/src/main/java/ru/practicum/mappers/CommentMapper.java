@@ -7,7 +7,6 @@ import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.comment.NewCommentDto;
 import ru.practicum.model.Comment;
 import ru.practicum.model.Event;
-import ru.practicum.model.User;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public interface CommentMapper {
     CommentDto getCommentDto(Comment comment);
 
     @Mapping(target = "id", ignore = true)
-    Comment getComment(NewCommentDto commentDto, Event event, User author);
+    Comment getComment(NewCommentDto commentDto, Event event, Long authorId);
 
     List<CommentDto> toCommentDtoList(List<Comment> comments);
 }

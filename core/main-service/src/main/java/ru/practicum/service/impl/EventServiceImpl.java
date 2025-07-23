@@ -1,5 +1,6 @@
 package ru.practicum.service.impl;
 
+import feign.UserClient;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +46,7 @@ public class EventServiceImpl implements EventService {
     CategoryRepository categoryRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserClient userClient;
 
     @Autowired
     EventRepository eventRepository;
@@ -69,8 +70,8 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Event date should be after two hours after now");
         }
 
-        User initiator = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long initiator = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
 
         Event event = EventMapper.INSTANCE.getEvent(newEventDto);
 
@@ -86,8 +87,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto findEvent(long eventId, long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
 
         return EventMapper.INSTANCE.getEventDto(
                 eventRepository.findByIdAndUserId(eventId, userId)
@@ -97,8 +98,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventShortDto> findEvents(long userId, int from, int size) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
 
         Pageable pageable = PageRequest.of(from, size);
 
@@ -115,8 +116,8 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Event date should be after two hours after now");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
 
         Event baseEvent = eventRepository.findByIdAndUserId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("event is not found with id = " + eventId));
@@ -278,11 +279,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public ParticipationRequestDto newRequest(long userId, long eventId) {
         if (requestRepository.findByUserIdAndEventId(userId, eventId).isEmpty()) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+            Long user = userClient.getUserById(userId).getId();
+                    //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
             Event event = eventRepository.findById(eventId)
                     .orElseThrow(() -> new NotFoundException("event is not found with id = " + eventId));
-            if (event.getInitiator().getId() == userId)
+            if (event.getInitiator() == userId)
                 throw new ConflictException("Event initiator can't make a request");
             if (event.getState() != EventState.PUBLISHED)
                 throw new ConflictException("Event with id = " + eventId + " is not published yet");
@@ -310,7 +311,7 @@ public class EventServiceImpl implements EventService {
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
         Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundException("Request with id = " + requestId + " not found"));
-        if (request.getUserId().getId() != userId)
+        if (request.getUserId() != userId)
             throw new ConflictException("User with id = " + userId + " is not an initializer of request with id = " + requestId);
         requestRepository.delete(request);
         request.setStatus(RequestStatus.CANCELED);
@@ -319,8 +320,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Collection<ParticipationRequestDto> findAllRequestsByUserId(long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
         Collection<ParticipationRequestDto> result = new ArrayList<>();
         result = requestRepository.findAllByUserId(userId).stream()
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
@@ -330,8 +331,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Collection<ParticipationRequestDto> findAllRequestsByEventId(long userId, long eventId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
         Collection<ParticipationRequestDto> result = new ArrayList<>();
         result = requestRepository.findAllByEventId(eventId).stream()
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
@@ -344,8 +345,8 @@ public class EventServiceImpl implements EventService {
     public EventRequestStatusUpdateResult updateRequestsStatus(long userId,
                                                                long eventId,
                                                                EventRequestStatusUpdateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
+        Long user = userClient.getUserById(userId).getId();
+                //.orElseThrow(() -> new NotFoundException("User is not found with id = " + userId));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("event is not found with id = " + eventId));
         if (!event.getInitiator().equals(user))

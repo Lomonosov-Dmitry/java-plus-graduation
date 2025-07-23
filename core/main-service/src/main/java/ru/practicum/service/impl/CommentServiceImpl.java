@@ -1,5 +1,7 @@
 package ru.practicum.service.impl;
 
+import dto.user.UserDto;
+import feign.UserClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -8,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.dal.CommentRepository;
 import ru.practicum.dal.EventRepository;
-import ru.practicum.dal.UserRepository;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.comment.NewCommentDto;
 import ru.practicum.dto.event.enums.EventState;
@@ -17,7 +18,6 @@ import ru.practicum.exceptions.NotFoundException;
 import ru.practicum.mappers.CommentMapper;
 import ru.practicum.model.Comment;
 import ru.practicum.model.Event;
-import ru.practicum.model.User;
 import ru.practicum.service.CommentService;
 
 import java.util.List;
@@ -26,9 +26,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
+    //private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CommentMapper commentMapper;
+    private final UserClient userClient;
 
     @Override
     public CommentDto save(Long userId, Long eventId, NewCommentDto newCommentDto) {
@@ -39,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentMapper.getComment(
                 newCommentDto,
                 event,
-                checkExistsAndReturnUser(userId)
+                checkExistsAndReturnUser(userId).getId()
         );
         return commentMapper.getCommentDto(commentRepository.save(comment));
     }
@@ -79,9 +80,12 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    private User checkExistsAndReturnUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id %d not found".formatted(userId)));
+    private UserDto checkExistsAndReturnUser(Long userId) {
+        UserDto dto = userClient.getUserById(userId);
+        if (dto != null)
+            return dto;
+        else
+            throw new NotFoundException("User with id %d not found".formatted(userId));
     }
 
     private Event checkExistsAndReturnEvent(Long eventId) {
@@ -95,7 +99,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment validateCommentForEvent(Long eventId, Long commentId, Long userId) {
-        User user = checkExistsAndReturnUser(userId);
+        UserDto userDto = checkExistsAndReturnUser(userId);
         Event event = checkExistsAndReturnEvent(eventId);
         Comment comment = checkExistsAndReturnComment(commentId);
 
@@ -103,9 +107,9 @@ public class CommentServiceImpl implements CommentService {
             throw new ConflictException("Comment with id %d is not belong to event with id %d"
                     .formatted(comment.getId(), event.getId()));
         }
-        if (!user.equals(comment.getAuthor())) {
+        if (!userDto.getId().equals(comment.getAuthorId())) {
             throw new ConflictException("Comment with id %d is not created by user with id %d"
-                    .formatted(comment.getAuthor().getId(), user.getId()));
+                    .formatted(comment.getAuthorId(), userDto.getId()));
         }
         return comment;
     }

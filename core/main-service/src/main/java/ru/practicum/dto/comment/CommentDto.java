@@ -1,8 +1,9 @@
 package ru.practicum.dto.comment;
 
+import dto.user.UserShortDto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.dto.user.UserShortDto;
+
 
 @Getter
 @Setter

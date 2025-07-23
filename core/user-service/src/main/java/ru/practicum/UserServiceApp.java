@@ -1,6 +1,5 @@
 package ru.practicum;
 
-import feign.UserClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -10,9 +9,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableDiscoveryClient
-@EnableFeignClients(clients = {UserClient.class})
-public class MainServiceApp {
+@EnableFeignClients
+public class UserServiceApp {
     public static void main(String[] args) {
-        SpringApplication.run(MainServiceApp.class, args);
+        SpringApplication.run(UserServiceApp.class, args);
     }
 }

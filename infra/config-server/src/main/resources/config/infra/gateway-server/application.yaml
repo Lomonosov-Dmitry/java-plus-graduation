@@ -5,9 +5,13 @@ spring:
         enabled: true
         lower-case-service-id: true
       routes:
-       - id: main_service_route
-         uri: lb://main-service
-         predicates:
+        - id: user_service_route
+          uri: lb://user-service
+          predicates:
+              - Path=/admin/users
+        - id: main_service_route
+          uri: lb://main-service
+          predicates:
             - Path=/admin/**,/users/**,/categories/**,/compilations/**,/events/**
 server:
   port: 8080

@@ -13,7 +13,7 @@ public interface RequestMapper {
 
     Request toRequest(ParticipationRequestDto dto);
 
-    @Mapping(target = "requester", expression = "java(request.getUserId().getId())")
+    @Mapping(target = "requester", expression = "java(request.getUserId())")
     @Mapping(target = "event", expression = "java(request.getEventId().getId())")
     @Mapping(target = "created", source = "createdOn")
     ParticipationRequestDto toParticipationRequestDto(Request request);
