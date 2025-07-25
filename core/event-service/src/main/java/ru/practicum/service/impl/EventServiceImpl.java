@@ -21,7 +21,7 @@ import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.enums.EventActionStateAdmin;
 import ru.practicum.dto.event.enums.EventState;
 import ru.practicum.dto.event.enums.SortingOptions;
-import ru.practicum.exceptions.ValidationException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.mappers.CommentMapper;
 import ru.practicum.mappers.EventMapper;
 import ru.practicum.mappers.EventUpdater;
