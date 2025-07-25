@@ -1,7 +1,7 @@
 package ru.practicum.controllers;
 
-import dto.category.CategoryDto;
-import dto.category.NewCategoryDto;
+import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.category.NewCategoryDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

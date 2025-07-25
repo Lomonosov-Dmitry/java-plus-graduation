@@ -1,8 +1,7 @@
 package ru.practicum.service;
 
-import exception.ConflictException;
-import exception.NotFoundException;
-import exception.ValidationException;
+import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.dal.UserRepository;
-import dto.user.NewUserDto;
-import dto.user.UserDto;
+import ru.practicum.dto.user.NewUserDto;
+import ru.practicum.dto.user.UserDto;
 import ru.practicum.mapper.UserMapper;
 import ru.practicum.model.User;
 

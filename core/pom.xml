@@ -12,10 +12,11 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>main-service</module>
+        <module>event-service</module>
         <module>user-service</module>
         <module>interaction-api</module>
         <module>category-service</module>
+        <module>request-service</module>
     </modules>
 
     <properties>
@@ -25,6 +26,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>ru.practicum</groupId>
+            <artifactId>stats-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>

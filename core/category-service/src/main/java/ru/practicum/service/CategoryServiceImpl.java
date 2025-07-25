@@ -1,8 +1,9 @@
 package ru.practicum.service;
 
-import dto.category.CategoryDto;
-import dto.category.NewCategoryDto;
-import exception.NotFoundException;
+import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.category.NewCategoryDto;
+import ru.practicum.exception.ConflictException;
+import ru.practicum.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.dal.CategoryRepository;
+import ru.practicum.feign.EventClient;
 import ru.practicum.mapper.CategoryMapper;
 import ru.practicum.model.Category;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final EventClient eventClient;
 
     @Transactional
     @Override
@@ -35,6 +38,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Long id) {
         getCategoryIfExists(id);
+        if (!eventClient.categoryCheck(id))
+            throw new ConflictException("There are events on category with id %d".formatted(id));
         log.info("Category with id {} deleted", id);
         categoryRepository.deleteById(id);
     }

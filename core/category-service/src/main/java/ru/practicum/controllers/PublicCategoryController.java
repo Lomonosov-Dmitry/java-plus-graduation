@@ -1,6 +1,6 @@
 package ru.practicum.controllers;
 
-import dto.category.CategoryDto;
+import ru.practicum.dto.category.CategoryDto;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
