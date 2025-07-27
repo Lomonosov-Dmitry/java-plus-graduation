@@ -1,13 +1,8 @@
 package ru.practicum.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.StatsHitDto;
-import ru.practicum.client.StatsClient;
 import ru.practicum.dal.RequestRepository;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.enums.EventState;
@@ -21,24 +16,23 @@ import ru.practicum.mapper.RequestMapper;
 import ru.practicum.model.Request;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
-    @Autowired
-    RequestRepository requestRepository;
 
-    @Autowired
-    UserClient userClient;
+    private final RequestRepository requestRepository;
 
-    @Autowired
-    EventClient eventClient;
+    private final UserClient userClient;
 
-    @Autowired
-    private StatsClient statsClient;
+    private final EventClient eventClient;
+
+    public RequestServiceImpl(RequestRepository requestRepository, UserClient userClient, EventClient eventClient) {
+        this.requestRepository = requestRepository;
+        this.userClient = userClient;
+        this.eventClient = eventClient;
+    }
 
     @Transactional
     @Override
@@ -82,22 +76,16 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Collection<ParticipationRequestDto> findAllRequestsByUserId(long userId) {
-        Long user = userClient.getUserById(userId).getId();
-        Collection<ParticipationRequestDto> result = new ArrayList<>();
-        result = requestRepository.findAllByUserId(userId).stream()
+        return requestRepository.findAllByUserId(userId).stream()
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
                 .toList();
-        return result;
     }
 
     @Override
     public Collection<ParticipationRequestDto> findAllRequestsByEventId(long userId, long eventId) {
-        Long user = userClient.getUserById(userId).getId();
-        Collection<ParticipationRequestDto> result = new ArrayList<>();
-        result = requestRepository.findAllByEventId(eventId).stream()
+        return  requestRepository.findAllByEventId(eventId).stream()
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
                 .toList();
-        return result;
     }
 
     @Transactional
@@ -130,8 +118,8 @@ public class RequestServiceImpl implements RequestService {
                 req.setStatus(RequestStatus.CONFIRMED);
                 limit--;
             }
-            requestRepository.save(req);
         }
+        requestRepository.saveAll(requests);
         if (eventDto.getParticipantLimit() != 0)
             eventDto.setConfirmedRequests((long) eventDto.getParticipantLimit() - limit);
         else
@@ -149,16 +137,5 @@ public class RequestServiceImpl implements RequestService {
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
                 .toList());
         return result;
-    }
-
-    private void sendStats(HttpServletRequest request) {
-        log.debug("save stats hit, uri = {}", request.getRequestURI());
-        log.debug("save stats hit, remoteAddr = {}", request.getRemoteAddr());
-        statsClient.hit(StatsHitDto.builder()
-                .app("main-service")
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
-                .timestamp(LocalDateTime.now())
-                .build());
     }
 }

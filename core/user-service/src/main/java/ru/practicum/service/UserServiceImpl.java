@@ -3,9 +3,7 @@ package ru.practicum.service;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,11 +19,15 @@ import java.util.List;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     @Transactional
     @Override

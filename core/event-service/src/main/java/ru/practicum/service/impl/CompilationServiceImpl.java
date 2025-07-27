@@ -1,9 +1,7 @@
 package ru.practicum.service.impl;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,10 +18,13 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
-    @Autowired
-    CompilationRepository compilationRepository;
+
+    private final CompilationRepository compilationRepository;
+
+    public CompilationServiceImpl(CompilationRepository compilationRepository) {
+        this.compilationRepository = compilationRepository;
+    }
 
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
@@ -35,26 +36,19 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteById(Long id) {
-        if (!compilationRepository.existsById(id)) {
-            throw new NotFoundException("compilation is not found with id = " + id);
-        } else {
-            compilationRepository.deleteById(id);
-        }
+        getCompilation(id);
+        compilationRepository.deleteById(id);
     }
 
     @Override
     public CompilationDto getById(Long id) {
-        Compilation compilation = compilationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("compilation is not found with id = " + id));
-
-        return CompilationMapper.INSTANCE.getCompilationDto(compilation);
+        return CompilationMapper.INSTANCE.getCompilationDto(getCompilation(id));
     }
 
     @Transactional
     @Override
     public CompilationDto updateById(Long id, UpdateCompilationRequest updateCompilationRequest) {
-        Compilation compilation = compilationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("compilation is not found with id = " + id));
+        Compilation compilation = getCompilation(id);
 
         CompilationMapper.INSTANCE.update(compilation, updateCompilationRequest);
         return CompilationMapper.INSTANCE.getCompilationDto(compilation);
@@ -67,5 +61,10 @@ public class CompilationServiceImpl implements CompilationService {
         return compilationRepository.findAllByFilterPublic(pinned, pageable).stream()
                 .map(CompilationMapper.INSTANCE::getCompilationDto)
                 .toList();
+    }
+
+    private Compilation getCompilation(Long id) {
+        return compilationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("compilation is not found with id = " + id));
     }
 }
