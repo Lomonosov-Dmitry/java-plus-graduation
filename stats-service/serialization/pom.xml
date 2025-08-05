@@ -12,7 +12,6 @@
     <artifactId>serialization</artifactId>
     <packaging>pom</packaging>
     <modules>
-
         <module>avro-schemas</module>
         <module>grpc-schemas</module>
     </modules>

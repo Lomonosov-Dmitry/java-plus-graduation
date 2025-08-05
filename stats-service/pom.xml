@@ -17,6 +17,7 @@
         <module>stats-common</module>
         <module>serialization</module>
         <module>collector</module>
+        <module>aggregator</module>
     </modules>
 
     <dependencies>
