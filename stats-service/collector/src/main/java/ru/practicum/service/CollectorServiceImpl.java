@@ -23,9 +23,9 @@ public class CollectorServiceImpl implements CollectorService {
     public void newUserAction(UserActionProto actionProto) {
         UserActionAvro actionAvro = new UserActionAvro();
         actionAvro.setEventId(actionProto.getEventId());
-        actionAvro.setUserId(actionAvro.getUserId());
+        actionAvro.setUserId(actionProto.getUserId());
         actionAvro.setActionType(getAvroType(actionProto.getActionType()));
-        actionAvro.setTimestamp(Instant.now());
+        actionAvro.setTimestamp(Instant.ofEpochSecond(actionProto.getTimestamp().getSeconds(), actionProto.getTimestamp().getNanos()));
         kafkaTemplate.send(USER_ACTION_TOPIC, actionAvro);
     }
 
