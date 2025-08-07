@@ -2,10 +2,9 @@ syntax = "proto3";
 
 package stats.message.event;
 
-import "google/protobuf/timestamp.proto";
-
 option java_multiple_files = true;
 option java_package = "ru.practicum.grpc.stats.event";
+import "google/protobuf/timestamp.proto";
 
 message UserActionProto {
   int64 user_id = 1;
