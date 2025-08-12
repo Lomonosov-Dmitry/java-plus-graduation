@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS events (
     request_moderation BOOLEAN,
     state VARCHAR(100) NOT NULL,
     title VARCHAR(120) NOT NULL,
-    rating DOUBLE,
+    rating DECIMAL,
     FOREIGN KEY (location_id) REFERENCES locations (id)
 );
 

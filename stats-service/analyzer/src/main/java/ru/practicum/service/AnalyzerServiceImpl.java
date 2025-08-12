@@ -14,9 +14,9 @@ import ru.practicum.grpc.stats.event.RecommendedEventProto;
 import ru.practicum.grpc.stats.event.SimilarEventsRequestProto;
 import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 import ru.practicum.mappers.EventSimilarityMapper;
-import ru.practicum.mappers.UserActionMapper;
 import ru.practicum.model.UserAction;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,7 +28,12 @@ public class AnalyzerServiceImpl implements AnalyzerService {
 
     @Override
     public void saveUserAction(UserActionAvro actionAvro) {
-        userActionsRepository.save(UserActionMapper.INSTANCE.toAction(actionAvro));
+        UserAction userAction = new UserAction();
+        userAction.setUserId(actionAvro.getUserId());
+        userAction.setEventId(actionAvro.getEventId());
+        userAction.setWeight(getActionRating(actionAvro.getActionType()));
+        userAction.setInteractAt(LocalDateTime.from(actionAvro.getTimestamp()));
+        userActionsRepository.save(userAction);
     }
 
     @Override

@@ -15,8 +15,8 @@ public interface UserActionsRepository extends JpaRepository<UserAction, Long> {
 
     @Query(value = """
             select ua.event_id   as event_id,
-                   sum(ua.score) as score
-            from user_action ua
+                   sum(ua.weight) as score
+            from user_actions ua
             where ua.event_id = :eventId
             group by ua.event_id
             

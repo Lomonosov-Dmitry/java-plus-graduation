@@ -64,6 +64,6 @@ public class Event {
     @Column(name = "title")
     String title;
 
-    @Column(name = "views")
+    @Column(name = "rating")
     Double rating;
 }

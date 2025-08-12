@@ -27,8 +27,8 @@ public class UserAction {
     @Column(name = "event_id")
     Long eventId;
 
-    @Enumerated(EnumType.STRING)
-    ActionTypeAvro actionType;
+    @Column(name = "weight")
+    Double weight;
 
     @Column(name = "interact_at")
     LocalDateTime interactAt;

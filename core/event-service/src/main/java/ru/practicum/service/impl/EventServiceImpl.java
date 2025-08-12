@@ -2,7 +2,6 @@ package ru.practicum.service.impl;
 
 import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.client.AnalyzerClient;
 import ru.practicum.client.CollectorClient;
 import ru.practicum.exception.ConflictException;
@@ -17,9 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.Constants;
-import ru.practicum.StatsHitDto;
-import ru.practicum.StatsViewDto;
-import ru.practicum.client.StatsClient;
 import ru.practicum.dal.*;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.enums.EventActionStateAdmin;
@@ -37,8 +33,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -220,7 +214,7 @@ public class EventServiceImpl implements EventService {
                                                         HttpServletRequest request) {
         Pageable pageable;
         if (sortingOptions != null) {
-            String sort = sortingOptions == SortingOptions.EVENT_DATE ? "eventDate" : "views";
+            String sort = sortingOptions == SortingOptions.EVENT_DATE ? "eventDate" : "rating";//"views";
             pageable = PageRequest.of(from, size, Sort.by(sort).descending());
         } else {
             pageable = PageRequest.of(from, size);
@@ -336,6 +330,6 @@ public class EventServiceImpl implements EventService {
     private double getEventRating(long eventId) {
         return analyzerClient.getInteractionsCount(InteractionsCountRequestProto.newBuilder()
                 .setEventId(eventId)
-                .build()).getFirst().getScore();
+                .build()).get(0).getScore();
     }
 }
