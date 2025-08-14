@@ -1,8 +1,11 @@
 package ru.practicum.service;
 
+import com.google.protobuf.Timestamp;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.client.CollectorClient;
 import ru.practicum.dal.RequestRepository;
 import ru.practicum.dto.event.*;
 import ru.practicum.dto.event.enums.EventState;
@@ -12,14 +15,18 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 import ru.practicum.feign.EventClient;
 import ru.practicum.feign.UserClient;
+import ru.practicum.grpc.stats.event.ActionTypeProto;
+import ru.practicum.grpc.stats.event.UserActionProto;
 import ru.practicum.mapper.RequestMapper;
 import ru.practicum.model.Request;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
@@ -28,11 +35,7 @@ public class RequestServiceImpl implements RequestService {
 
     private final EventClient eventClient;
 
-    public RequestServiceImpl(RequestRepository requestRepository, UserClient userClient, EventClient eventClient) {
-        this.requestRepository = requestRepository;
-        this.userClient = userClient;
-        this.eventClient = eventClient;
-    }
+    private final CollectorClient collectorClient;
 
     @Transactional
     @Override
@@ -56,6 +59,7 @@ public class RequestServiceImpl implements RequestService {
                 request.setStatus(RequestStatus.CONFIRMED);
                 eventClient.increaseConfirmed(eventId, eventDto.getConfirmedRequests() + 1);
             }
+            register(userId, eventId);
             return RequestMapper.INSTANCE.toParticipationRequestDto(requestRepository.save(request));
         } else
             throw new ConflictException("Request from user with id = " + userId +
@@ -137,5 +141,16 @@ public class RequestServiceImpl implements RequestService {
                 .map(RequestMapper.INSTANCE::toParticipationRequestDto)
                 .toList());
         return result;
+    }
+
+    private void register(long userId, long eventId) {
+        log.debug("Сохраняем просмотр от пользователя = {}", userId);
+        collectorClient.newUserAction(UserActionProto.newBuilder()
+                .setUserId(userId)
+                .setEventId(eventId)
+                .setActionType(ActionTypeProto.ACTION_REGISTER)
+                .setTimestamp(Timestamp.newBuilder().setSeconds(Instant.now().getEpochSecond())
+                        .setNanos(Instant.now().getNano()).build())
+                .build());
     }
 }
