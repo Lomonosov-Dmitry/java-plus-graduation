@@ -294,7 +294,7 @@ public class EventServiceImpl implements EventService {
 
     private double getEventRating(long eventId) {
         List<RecommendedEventProto> proto = analyzerClient.getInteractionsCount(InteractionsCountRequestProto.newBuilder()
-                .setEventId(eventId)
+                .addEventId(eventId)
                 .build());
         if (proto.isEmpty())
             return 0;
