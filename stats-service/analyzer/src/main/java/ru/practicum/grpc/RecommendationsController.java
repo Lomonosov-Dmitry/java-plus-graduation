@@ -47,7 +47,7 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
 
     @Override
     public void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
-        log.info("Пришел запрос на взаимодействие на событие {}", request.getEventId());
+        log.info("Пришел запрос на взаимодействие на события");
         try {
             analyzerService.getInteractionsCount(request, responseObserver);
             responseObserver.onCompleted();

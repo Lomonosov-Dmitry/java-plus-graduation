@@ -32,7 +32,7 @@ public class AnalyzerServiceImpl implements AnalyzerService {
     public void saveAction(UserActionAvro actionAvro) {
         if (userActionRepository.existsUserActionByEventIdAndUserId(actionAvro.getEventId(), actionAvro.getUserId())) {
             UserAction action = userActionRepository.findByEventIdAndUserId(actionAvro.getEventId(), actionAvro.getUserId());
-            if (action.getWeight() < getActionRating(actionAvro.getActionType())) {
+            if (action.getScore() < getActionRating(actionAvro.getActionType())) {
                 userActionRepository.delete(action);
                 userActionRepository.save(UserActionMapper.INSTANCE.toAction(actionAvro));
             }
@@ -66,10 +66,13 @@ public class AnalyzerServiceImpl implements AnalyzerService {
 
     @Override
     public void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
-        List<RecommendedEventI> events = userActionRepository.getInteractions(request.getEventId());
-        sendResponse(events.stream()
-                .map(UserActionMapper.INSTANCE::toProto)
-                .toList(), responseObserver);
+        for (Long event : request.getEventIdList()) {
+            List<RecommendedEventI> events = userActionRepository.getInteractions(event);
+            sendResponse(events.stream()
+                    .map(UserActionMapper.INSTANCE::toProto)
+                    .toList(), responseObserver);
+
+        }
     }
 
     @Override

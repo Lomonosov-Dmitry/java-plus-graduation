@@ -26,8 +26,8 @@ public class UserAction {
     @Column(name = "event_id")
     Long eventId;
 
-    @Column(name = "weight")
-    Double weight;
+    @Column(name = "score")
+    Double score;
 
     @Column(name = "interact_at")
     LocalDateTime interactAt;

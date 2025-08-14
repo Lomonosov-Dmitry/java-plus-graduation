@@ -15,6 +15,6 @@ public interface UserActionRepository extends JpaRepository<UserAction, Long> {
     boolean existsUserActionByEventIdAndUserId(Long eventId, Long userId);
 
     @Query(value = """
-            select user_id, weight FROM user_actions where event_id = :eventId""", nativeQuery = true)
+            select event_id as event_id, sum(score) as score from user_actions where event_id = :eventId group by event_id""", nativeQuery = true)
     List<RecommendedEventI> getInteractions(Long eventId);
 }

@@ -20,7 +20,7 @@ public interface UserActionMapper {
     UserActionMapper INSTANCE = Mappers.getMapper(UserActionMapper.class);
 
     @Mapping(target = "interactAt", qualifiedByName = "timestampConvert", source = "timestamp")
-    @Mapping(target = "weight", qualifiedByName = "getActionRating", source = "actionType")
+    @Mapping(target = "score", qualifiedByName = "getActionRating", source = "actionType")
     UserAction toAction(UserActionAvro actionAvro);
 
     @Named("timestampConvert")
