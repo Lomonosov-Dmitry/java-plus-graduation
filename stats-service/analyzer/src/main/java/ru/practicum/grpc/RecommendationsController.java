@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.grpc;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -13,13 +13,13 @@ import ru.practicum.service.AnalyzerService;
 @GrpcService
 @RequiredArgsConstructor
 public class RecommendationsController extends RecommendationsControllerGrpc.RecommendationsControllerImplBase {
-    private final AnalyzerService analyzerService;
+    public final AnalyzerService analyzerService;
 
     @Override
     public void getRecommendationsForUser(UserPredictionsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Пришел запрос на рекомендации для пользователя {}", request.getUserId());
         try {
-            log.info("Получили UserPredictionsRequest: {}", request);
-            analyzerService.getRecommendationsForUser(request, responseObserver);
+            analyzerService.getRecommendations(request, responseObserver);
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
@@ -32,9 +32,9 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
 
     @Override
     public void getSimilarEvents(SimilarEventsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Пришел запрос на похожесть на событие {} для пользователя {}", request.getEventId(), request.getUserId());
         try {
-            log.info("Получили SimilarEventsRequest: {}", request);
-            analyzerService.getSimilarEvents(request, responseObserver);
+            analyzerService.getSimilarities(request, responseObserver);
             responseObserver.onCompleted();
         } catch (Exception e) {
             responseObserver.onError(new StatusRuntimeException(
@@ -47,8 +47,8 @@ public class RecommendationsController extends RecommendationsControllerGrpc.Rec
 
     @Override
     public void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver) {
+        log.info("Пришел запрос на взаимодействие на событие {}", request.getEventId());
         try {
-            log.info("Получили InteractionsCountRequest: {}", request);
             analyzerService.getInteractionsCount(request, responseObserver);
             responseObserver.onCompleted();
         } catch (Exception e) {

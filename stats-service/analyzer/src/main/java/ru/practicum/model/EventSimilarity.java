@@ -15,7 +15,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "event_similarity")
-public class EventSimitarity {
+public class EventSimilarity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     Long id;
@@ -27,8 +27,8 @@ public class EventSimitarity {
     Long eventBId;
 
     @Column(name = "score")
-    Long score;
+    Double score;
 
     @Column(name = "calculated_at")
-    LocalDateTime calculatedAt;
+    LocalDateTime calculated_at;
 }

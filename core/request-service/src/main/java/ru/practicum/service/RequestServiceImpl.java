@@ -2,6 +2,7 @@ package ru.practicum.service;
 
 import com.google.protobuf.Timestamp;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.client.CollectorClient;
@@ -25,6 +26,7 @@ import java.util.Collection;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
@@ -34,16 +36,6 @@ public class RequestServiceImpl implements RequestService {
     private final EventClient eventClient;
 
     private final CollectorClient collectorClient;
-
-    public RequestServiceImpl(RequestRepository requestRepository,
-                              UserClient userClient,
-                              EventClient eventClient,
-                              CollectorClient collectorClient) {
-        this.requestRepository = requestRepository;
-        this.userClient = userClient;
-        this.eventClient = eventClient;
-        this.collectorClient = collectorClient;
-    }
 
     @Transactional
     @Override

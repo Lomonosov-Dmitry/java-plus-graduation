@@ -10,7 +10,6 @@ import ru.practicum.feign.UserClient;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -38,25 +37,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
-    @Autowired
-    LocationRepository locationRepository;
+    private final LocationRepository locationRepository;
 
-    @Autowired
-    UserClient userClient;
+    private final UserClient userClient;
 
-    @Autowired
-    EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
-    @Autowired
-    CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    private CommentMapper commentMapper;
+    private final CommentMapper commentMapper;
 
-    @Autowired
     private final AnalyzerClient analyzerClient;
 
-    @Autowired
     private final CollectorClient collectorClient;
 
     @Override
@@ -242,26 +234,6 @@ public class EventServiceImpl implements EventService {
         for (Event event : events) {
             event.setRating(getEventRating(event.getId()));
         }
-        /*List<String> uris = events.stream()
-                .map(x -> "/event/" + x.getId())
-                .toList();
-
-        String startStatsDate = events.stream()
-                .map(Event::getPublishedOn)
-                .min(LocalDateTime::compareTo).get().format(Constants.DATE_TIME_FORMATTER);
-        String endStatsDate = LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER);
-
-        List<StatsViewDto> statViews = statsClient.getStats(startStatsDate, endStatsDate, uris, false);
-        Map<String, Long> eventViews = statViews.stream()
-                .collect(Collectors.toMap(StatsViewDto::getUri, StatsViewDto::getHits));
-        eventViews.forEach((uri, hits) -> {
-            String[] uriSplit = "/".split(uri);
-            long partUri = Long.parseLong(uriSplit[uriSplit.length - 1]);
-            events.stream()
-                    .filter(x -> x.getId() == partUri)
-                    .findFirst()
-                    .ifPresent(x -> x.setViews(hits));
-        });*/
         eventRepository.saveAll(events);
         return events.stream()
                 .map(EventMapper.INSTANCE::getEventShortDto)
@@ -273,13 +245,6 @@ public class EventServiceImpl implements EventService {
         Event baseEvent = eventRepository.findByIdAndStatus(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("published event is not found with id = " + eventId));
         sendStats(userId, eventId);
-        /*List<StatsViewDto> views = statsClient.getStats(baseEvent.getPublishedOn()
-                        .format(Constants.DATE_TIME_FORMATTER),
-                LocalDateTime.now().format(Constants.DATE_TIME_FORMATTER),
-                List.of(request.getRequestURI()),
-                true);
-        log.debug("received from stats client list of StatsViewDto: {}", views);
-        baseEvent.setViews(views.get(0).getHits());*/
         baseEvent.setRating(getEventRating(baseEvent.getId()));
         eventRepository.save(baseEvent);
         List<Comment> comments = commentRepository.findAllByEventId(eventId);
@@ -328,8 +293,12 @@ public class EventServiceImpl implements EventService {
     }
 
     private double getEventRating(long eventId) {
-        return analyzerClient.getInteractionsCount(InteractionsCountRequestProto.newBuilder()
+        List<RecommendedEventProto> proto = analyzerClient.getInteractionsCount(InteractionsCountRequestProto.newBuilder()
                 .setEventId(eventId)
-                .build()).get(0).getScore();
+                .build());
+        if (proto.isEmpty())
+            return 0;
+        else
+            return proto.get(0).getScore();
     }
 }

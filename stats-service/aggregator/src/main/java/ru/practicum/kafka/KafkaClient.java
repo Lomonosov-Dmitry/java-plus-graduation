@@ -15,7 +15,6 @@ public class KafkaClient {
 
     @KafkaListener(topics = "${kafka.topic.stats.v1}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenActions(UserActionAvro actionAvro) {
-        //log.info("Получили действие: {}", actionAvro);
         aggregatorService.processAction(actionAvro);
     }
 }

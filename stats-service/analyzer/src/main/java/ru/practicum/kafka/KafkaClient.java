@@ -14,15 +14,19 @@ import ru.practicum.service.AnalyzerService;
 public class KafkaClient {
     private final AnalyzerService analyzerService;
 
-    @KafkaListener(topics = "${kafka.topic.stats.v1}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.topic.stats.v1}",
+            groupId = "${spring.kafka.consumer.user-actions-consumer.group-id}",
+            containerFactory = "userActionListener")
     public void listenActions(UserActionAvro actionAvro) {
-        log.info("Получили действие: {}", actionAvro);
-        analyzerService.saveUserAction(actionAvro);
+        log.info("Получили действие {}", actionAvro);
+        analyzerService.saveAction(actionAvro);
     }
 
-    @KafkaListener(topics = "${kafka.topic.similarity.v1}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.topic.similarity.v1}",
+            groupId = "${spring.kafka.consumer.events-similarity-consumer.group-id}",
+            containerFactory = "similarityListener")
     public void listenSimilarity(EventSimilarityAvro eventSimilarityAvro) {
         log.info("Получили новую похожесть: {}", eventSimilarityAvro);
-        analyzerService.saveEventSimilarity(eventSimilarityAvro);
+        analyzerService.saveSimilarity(eventSimilarityAvro);
     }
 }

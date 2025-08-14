@@ -10,16 +10,13 @@ import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 
 public interface AnalyzerService {
 
-    void saveUserAction(UserActionAvro actionAvro);
+    void saveAction(UserActionAvro actionAvro);
 
-    void saveEventSimilarity(EventSimilarityAvro eventSimilarityAvro);
+    void saveSimilarity(EventSimilarityAvro similarityAvro);
 
-    void getRecommendationsForUser(UserPredictionsRequestProto request,
-                                   StreamObserver<RecommendedEventProto> responseObserver);
+    void getInteractionsCount(InteractionsCountRequestProto request, StreamObserver<RecommendedEventProto> responseObserver);
 
-    void getSimilarEvents(SimilarEventsRequestProto request,
-                          StreamObserver<RecommendedEventProto> responseObserver);
+    public void getSimilarities(SimilarEventsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver);
 
-    void getInteractionsCount(InteractionsCountRequestProto request,
-                              StreamObserver<RecommendedEventProto> responseObserver);
+    public void getRecommendations(UserPredictionsRequestProto request, StreamObserver<RecommendedEventProto> responseObserver);
 }

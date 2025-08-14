@@ -16,13 +16,16 @@ spring:
     password: password
 
   kafka:
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.practicum.BaseAvroSerializer
+    bootstrap-server: localhost:9092
     consumer:
-      group-id: stats.aggregator
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: ru.practicum.UserActionDeserializer
+      user-actions-consumer:
+        group-id: stats.analyzer
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: ru.practicum.UserActionDeserializer
+      events-similarity-consumer:
+        group-id: stats.analyzer
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: ru.practicum.EventSimilarityDeserializer
 
 kafka:
   topic:

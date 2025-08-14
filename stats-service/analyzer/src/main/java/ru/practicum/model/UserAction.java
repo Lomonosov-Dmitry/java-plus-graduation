@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 
 import java.time.LocalDateTime;
 

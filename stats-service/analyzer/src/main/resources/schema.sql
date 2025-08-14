@@ -15,6 +15,3 @@ CREATE TABLE IF NOT EXISTS event_similarity (
     calculated_at TIMESTAMP,
     UNIQUE (event_A_id, event_B_id)
 );
-
-
-
